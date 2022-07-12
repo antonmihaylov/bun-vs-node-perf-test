@@ -1,22 +1,20 @@
-import { readFile } from "fs/promises";
 import http from "http";
 import Database from "better-sqlite3";
 
 const db = new Database("../test.db");
+const stm = db.prepare("SELECT * from test");
 
 http
   .createServer(async function (req, res) {
     try {
-      let data;
-      for (let i = 0; i < 10; i++) {
-        data = JSON.parse(
-          await readFile("../test.json", { encoding: "utf-8" })
-        );
-      }
-
       let rows;
       for (let i = 0; i < 10; i++) {
-        rows = await db.prepare("SELECT * from test").get();
+        rows = await stm.get();
+      }
+
+      let data;
+      for (let i = 0; i < 10; i++) {
+        data = JSON.parse(JSON.stringify(rows));
       }
 
       res.setHeader("Content-Type", "application/json");
