@@ -5,11 +5,11 @@ const db = new Database("../test.db");
 const stm = db.prepare("SELECT * from test");
 
 http
-  .createServer(async function (req, res) {
+  .createServer(function (req, res) {
     try {
       let rows;
       for (let i = 0; i < 10; i++) {
-        rows = await stm.get();
+        rows = stm.all();
       }
 
       let data;
